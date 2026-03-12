@@ -5,6 +5,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LanguageService, LANGUAGES } from '../../services/language.service';
 import { CurrencyService, CURRENCIES } from '../../services/currency.service';
+import { BasketService } from '../../services/basket.service';
 
 @Component({
   selector: 'app-layout',
@@ -38,7 +39,9 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
             #basketLink="routerLinkActive"
             [active]="basketLink.isActive"
           >
-            Basket
+            Basket @if (basketService.itemCount() > 0) {
+              ({{ basketService.itemCount() }})
+            }
           </a>
         </nav>
 
@@ -144,4 +147,5 @@ export class LayoutComponent {
   protected readonly currencyService = inject(CurrencyService);
   protected readonly languages = LANGUAGES;
   protected readonly currencies = CURRENCIES;
+  protected readonly basketService = inject(BasketService);
 }

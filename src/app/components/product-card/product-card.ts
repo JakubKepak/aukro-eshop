@@ -6,6 +6,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { BasketService } from '../../services/basket.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,11 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Product } from '../../models/product.model';
 import { LanguageService } from '../../services/language.service';
-import {
-  CurrencyService,
-  CURRENCIES,
-  CurrencyCode,
-} from '../../services/currency.service';
+import { CurrencyService } from '../../services/currency.service';
+import { formatPrice } from '../../utils/format-price';
 
 @Component({
   selector: 'app-product-card',
@@ -219,6 +217,7 @@ export class ProductCardComponent {
 
   private readonly languageService = inject(LanguageService);
   private readonly currencyService = inject(CurrencyService);
+  private readonly basketService = inject(BasketService);
 
   readonly quantity = signal(1);
 
@@ -226,16 +225,16 @@ export class ProductCardComponent {
     this.product().name[this.languageService.language()],
   );
 
-  readonly formattedUnitPrice = computed(() => {
-    const converted = this.currencyService.convert(this.product().priceCzk);
-    return this.formatPrice(converted);
-  });
+  readonly formattedUnitPrice = computed(() =>
+    formatPrice(this.currencyService.convert(this.product().priceCzk), this.currencyService.currency()),
+  );
 
-  readonly formattedTotal = computed(() => {
-    const total =
-      this.currencyService.convert(this.product().priceCzk) * this.quantity();
-    return this.formatPrice(total);
-  });
+  readonly formattedTotal = computed(() =>
+    formatPrice(
+      this.currencyService.convert(this.product().priceCzk) * this.quantity(),
+      this.currencyService.currency(),
+    ),
+  );
 
   onQuantityChange(event: Event): void {
     const val = parseFloat((event.target as HTMLInputElement).value);
@@ -245,21 +244,8 @@ export class ProductCardComponent {
   }
 
   onAddToBasket(): void {
-    // Will be wired to BasketService in Block 4
+    this.basketService.addItem(this.product(), this.quantity());
+    this.quantity.set(1);
   }
 
-  private formatPrice(amount: number): string {
-    const code = this.currencyService.currency();
-    const symbol =
-      CURRENCIES.find((c) => c.code === code)?.symbol ?? code;
-    const formatted = amount.toFixed(2);
-
-    const symbolMap: Record<CurrencyCode, string> = {
-      CZK: `${formatted} ${symbol}`,
-      EUR: `${symbol}${formatted}`,
-      GBP: `${symbol}${formatted}`,
-    };
-
-    return symbolMap[code];
-  }
 }
