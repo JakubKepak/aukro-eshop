@@ -4,10 +4,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-basket',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4">
-      <h2 class="text-2xl font-bold">Basket</h2>
-      <p class="text-gray-600 mt-2">Your basket items will appear here.</p>
+    <div class="mb-6">
+      <h1 class="text-3xl font-light">
+        Basket
+        <span class="text-base text-gray-400 ml-2">0 items</span>
+      </h1>
     </div>
+    <p class="text-gray-500">Your basket is empty.</p>
   `,
 })
 export class BasketComponent {}
