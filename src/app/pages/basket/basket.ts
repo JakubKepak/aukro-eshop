@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +21,7 @@ import { OrderSummaryComponent } from '../../components/order-summary/order-summ
     <div class="page-header">
       <h1 class="page-title">
         Basket
-        <span class="item-count">{{ basketService.itemCount() }} items</span>
+        <span class="item-count">{{ itemLabel() }}</span>
       </h1>
     </div>
 
@@ -199,6 +199,11 @@ export class BasketComponent {
   protected readonly basketService = inject(BasketService);
   protected readonly languageService = inject(LanguageService);
   protected readonly currencyService = inject(CurrencyService);
+
+  readonly itemLabel = computed(() => {
+    const count = this.basketService.itemCount();
+    return `${count} ${count === 1 ? 'item' : 'items'}`;
+  });
 
   formatPrice(amount: number): string {
     return fmtPrice(amount, this.currencyService.currency());

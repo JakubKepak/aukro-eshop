@@ -10,7 +10,7 @@ import { ProductCardComponent } from '../../components/product-card/product-card
     <div class="page-header">
       <h1 class="page-title">
         Shoplist
-        <span class="item-count">{{ productCount() }} items</span>
+        <span class="item-count">{{ itemLabel() }}</span>
       </h1>
     </div>
 
@@ -60,4 +60,8 @@ export class ShopListComponent {
 
   readonly products = this.productService.products;
   readonly productCount = computed(() => this.products().length);
+  readonly itemLabel = computed(() => {
+    const count = this.productCount();
+    return `${count} ${count === 1 ? 'item' : 'items'}`;
+  });
 }
