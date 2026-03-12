@@ -7,20 +7,52 @@ import { ProductCardComponent } from '../../components/product-card/product-card
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ProductCardComponent],
   template: `
-    <div class="mb-6">
-      <h1 class="font-serif text-4xl italic font-light text-gray-900">
+    <div class="page-header">
+      <h1 class="page-title">
         Shoplist
-        <span class="text-sm font-sans not-italic text-gray-400 ml-3">
-          {{ productCount() }} items
-        </span>
+        <span class="item-count">{{ productCount() }} items</span>
       </h1>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="product-grid">
       @for (product of products(); track product.id) {
         <app-product-card [product]="product" />
       }
     </div>
+  `,
+  styles: `
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2.25rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #111;
+      margin: 0;
+    }
+
+    .item-count {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.875rem;
+      font-style: normal;
+      color: #9ca3af;
+      margin-left: 0.75rem;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .product-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
   `,
 })
 export class ShopListComponent {

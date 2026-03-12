@@ -17,11 +17,11 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
     MatFormFieldModule,
   ],
   template: `
-    <header class="bg-white">
-      <div class="mx-auto max-w-5xl flex items-center justify-between px-4 pt-3">
-        <div class="flex-1"></div>
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-spacer"></div>
 
-        <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="border-0!">
+        <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="nav-bar">
           <a
             mat-tab-link
             routerLink="/shop"
@@ -42,7 +42,7 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
           </a>
         </nav>
 
-        <div class="flex-1 flex items-center justify-end gap-2">
+        <div class="header-selectors">
           <mat-form-field
             appearance="outline"
             subscriptSizing="dynamic"
@@ -79,7 +79,7 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
     </header>
 
     <mat-tab-nav-panel #tabPanel>
-      <main class="mx-auto max-w-5xl px-4 py-6">
+      <main class="main-content">
         <ng-content />
       </main>
     </mat-tab-nav-panel>
@@ -87,6 +87,35 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
   styles: `
     :host {
       display: block;
+    }
+
+    .header {
+      background: white;
+    }
+
+    .header-inner {
+      max-width: 64rem;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem 0;
+    }
+
+    .header-spacer {
+      flex: 1;
+    }
+
+    .nav-bar {
+      border-bottom: none;
+    }
+
+    .header-selectors {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
     }
 
     .header-select {
@@ -101,6 +130,12 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
         padding: 6px 0 !important;
         min-height: 36px;
       }
+    }
+
+    .main-content {
+      max-width: 64rem;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
     }
   `,
 })
