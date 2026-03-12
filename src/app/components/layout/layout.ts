@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LanguageService, LANGUAGES } from '../../services/language.service';
@@ -12,32 +12,42 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
   imports: [
     RouterLink,
     RouterLinkActive,
-    MatButtonToggleModule,
+    MatTabsModule,
     MatSelectModule,
     MatFormFieldModule,
   ],
   template: `
-    <header class="border-b border-gray-200 bg-white">
-      <div class="mx-auto max-w-5xl flex flex-col sm:flex-row items-center justify-between px-4 py-3 gap-3">
-        <nav>
-          <mat-button-toggle-group hideSingleSelectionIndicator>
-            <mat-button-toggle
-              routerLink="/shop"
-              routerLinkActive="mat-button-toggle-checked"
-            >
-              Shop list
-            </mat-button-toggle>
-            <mat-button-toggle
-              routerLink="/basket"
-              routerLinkActive="mat-button-toggle-checked"
-            >
-              Basket
-            </mat-button-toggle>
-          </mat-button-toggle-group>
+    <header class="bg-white">
+      <div class="mx-auto max-w-5xl flex items-center justify-between px-4 pt-3">
+        <div class="flex-1"></div>
+
+        <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="border-0!">
+          <a
+            mat-tab-link
+            routerLink="/shop"
+            routerLinkActive
+            #shopLink="routerLinkActive"
+            [active]="shopLink.isActive"
+          >
+            Shop list
+          </a>
+          <a
+            mat-tab-link
+            routerLink="/basket"
+            routerLinkActive
+            #basketLink="routerLinkActive"
+            [active]="basketLink.isActive"
+          >
+            Basket
+          </a>
         </nav>
 
-        <div class="flex items-center gap-2">
-          <mat-form-field appearance="outline" class="header-select">
+        <div class="flex-1 flex items-center justify-end gap-2">
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+            class="header-select"
+          >
             <mat-select
               [value]="languageService.language()"
               (selectionChange)="languageService.setLanguage($event.value)"
@@ -48,13 +58,19 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="header-select">
+          <mat-form-field
+            appearance="outline"
+            subscriptSizing="dynamic"
+            class="header-select"
+          >
             <mat-select
               [value]="currencyService.currency()"
               (selectionChange)="currencyService.setCurrency($event.value)"
             >
               @for (curr of currencies; track curr.code) {
-                <mat-option [value]="curr.code">{{ curr.symbol }} {{ curr.code }}</mat-option>
+                <mat-option [value]="curr.code">
+                  {{ curr.symbol }} {{ curr.code }}
+                </mat-option>
               }
             </mat-select>
           </mat-form-field>
@@ -62,9 +78,11 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
       </div>
     </header>
 
-    <main class="mx-auto max-w-5xl px-4 py-6">
-      <ng-content />
-    </main>
+    <mat-tab-nav-panel #tabPanel>
+      <main class="mx-auto max-w-5xl px-4 py-6">
+        <ng-content />
+      </main>
+    </mat-tab-nav-panel>
   `,
   styles: `
     :host {
@@ -72,20 +90,16 @@ import { CurrencyService, CURRENCIES } from '../../services/currency.service';
     }
 
     .header-select {
-      width: 7.5rem;
-
-      ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-        display: none;
-      }
+      width: 7rem;
 
       ::ng-deep .mat-mdc-text-field-wrapper {
-        height: 40px;
+        height: 36px;
+        padding: 0 8px;
       }
 
       ::ng-deep .mat-mdc-form-field-infix {
-        padding-top: 8px !important;
-        padding-bottom: 8px !important;
-        min-height: unset;
+        padding: 6px 0 !important;
+        min-height: 36px;
       }
     }
   `,
