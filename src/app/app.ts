@@ -6,7 +6,6 @@ import { LayoutComponent } from './components/layout/layout';
   selector: 'app-root',
   imports: [RouterOutlet, LayoutComponent],
   templateUrl: './app.html',
-  styleUrl: './app.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {}
