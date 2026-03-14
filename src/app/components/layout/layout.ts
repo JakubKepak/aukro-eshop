@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { LanguageService, LANGUAGES } from '../../services/language.service';
 import { CurrencyService, CURRENCIES } from '../../services/currency.service';
 import { BasketService } from '../../services/basket.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-layout',
@@ -16,6 +17,7 @@ import { BasketService } from '../../services/basket.service';
     MatTabsModule,
     MatSelectModule,
     MatFormFieldModule,
+    TranslatePipe,
   ],
   template: `
     <header class="header">
@@ -30,7 +32,7 @@ import { BasketService } from '../../services/basket.service';
             #shopLink="routerLinkActive"
             [active]="shopLink.isActive"
           >
-            Shop list
+            {{ 'nav.shop' | translate }}
           </a>
           <a
             mat-tab-link
@@ -39,8 +41,8 @@ import { BasketService } from '../../services/basket.service';
             #basketLink="routerLinkActive"
             [active]="basketLink.isActive"
           >
-            Basket @if (basketService.itemCount() > 0) {
-              ({{ basketService.itemCount() }})
+            {{ 'nav.basket' | translate }} @if (basketBadge(); as badge) {
+              ({{ badge }})
             }
           </a>
         </nav>
@@ -148,4 +150,8 @@ export class LayoutComponent {
   protected readonly languages = LANGUAGES;
   protected readonly currencies = CURRENCIES;
   protected readonly basketService = inject(BasketService);
+  protected readonly basketBadge = computed(() => {
+    const count = this.basketService.itemCount();
+    return count > 0 ? count : null;
+  });
 }

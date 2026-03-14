@@ -5,35 +5,36 @@ import { BasketService } from '../../services/basket.service';
 import { CurrencyService } from '../../services/currency.service';
 import { formatPrice } from '../../utils/format-price';
 import { SHIPPING_CZK, TAX_RATE } from '../../utils/order-config';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-order-summary',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, MatDividerModule],
+  imports: [MatCardModule, MatDividerModule, TranslatePipe],
   template: `
     <mat-card appearance="outlined" class="summary-card">
       <mat-card-content>
-        <h2 class="summary-title">Order summary</h2>
+        <h2 class="summary-title">{{ 'order.summary' | translate }}</h2>
 
         <div class="summary-row">
-          <span>Subtotal</span>
+          <span>{{ 'order.subtotal' | translate }}</span>
           <span>{{ formattedSubtotal() }}</span>
         </div>
 
         <div class="summary-row">
-          <span>Shipping</span>
+          <span>{{ 'order.shipping' | translate }}</span>
           <span>{{ formattedShipping() }}</span>
         </div>
 
         <div class="summary-row">
-          <span>Tax (21%)</span>
+          <span>{{ 'order.tax' | translate }}</span>
           <span>{{ formattedTax() }}</span>
         </div>
 
         <mat-divider />
 
         <div class="summary-row total-row">
-          <span>Total</span>
+          <span>{{ 'order.total' | translate }}</span>
           <span>{{ formattedTotal() }}</span>
         </div>
       </mat-card-content>

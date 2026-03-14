@@ -1,15 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { ProductCardComponent } from '../../components/product-card/product-card';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { LanguageService } from '../../services/language.service';
+import { TRANSLATIONS } from '../../i18n/translations';
 
 @Component({
   selector: 'app-shop-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ProductCardComponent],
+  imports: [ProductCardComponent, TranslatePipe],
   template: `
     <div class="page-header">
       <h1 class="page-title">
-        Shoplist
+        {{ 'shop.title' | translate }}
         <span class="item-count">{{ itemLabel() }}</span>
       </h1>
     </div>
@@ -57,11 +60,16 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 })
 export class ShopListComponent {
   private readonly productService = inject(ProductService);
+  private readonly languageService = inject(LanguageService);
 
   readonly products = this.productService.products;
   readonly productCount = computed(() => this.products().length);
   readonly itemLabel = computed(() => {
     const count = this.productCount();
-    return `${count} ${count === 1 ? 'item' : 'items'}`;
+    const lang = this.languageService.language();
+    const label = count === 1
+      ? TRANSLATIONS['common.item'][lang]
+      : TRANSLATIONS['common.items'][lang];
+    return `${count} ${label}`;
   });
 }

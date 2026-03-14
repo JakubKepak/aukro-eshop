@@ -9,13 +9,13 @@ import {
 import { BasketService } from '../../services/basket.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Product } from '../../models/product.model';
 import { LanguageService } from '../../services/language.service';
 import { CurrencyService } from '../../services/currency.service';
 import { formatPrice } from '../../utils/format-price';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-product-card',
@@ -23,9 +23,9 @@ import { formatPrice } from '../../utils/format-price';
   imports: [
     MatButtonModule,
     MatCardModule,
-    MatIconModule,
     MatInputModule,
     MatFormFieldModule,
+    TranslatePipe,
   ],
   host: { class: 'block' },
   template: `
@@ -66,13 +66,6 @@ import { formatPrice } from '../../utils/format-price';
                   />
                 </mat-form-field>
                 <span class="unit-label">{{ product().unit }}</span>
-                <button
-                  mat-icon-button
-                  aria-label="Edit quantity"
-                  class="edit-btn"
-                >
-                  <mat-icon>edit</mat-icon>
-                </button>
               </div>
 
               <button
@@ -81,7 +74,7 @@ import { formatPrice } from '../../utils/format-price';
                 class="add-btn"
                 (click)="onAddToBasket()"
               >
-                Add to basket
+                {{ 'product.addToBasket' | translate }}
               </button>
             </div>
           </div>
@@ -192,18 +185,6 @@ import { formatPrice } from '../../utils/format-price';
     .unit-label {
       font-size: 0.875rem;
       color: #6b7280;
-    }
-
-    .edit-btn {
-      width: 2rem;
-      height: 2rem;
-
-      mat-icon {
-        font-size: 1rem;
-        width: 1rem;
-        height: 1rem;
-        color: #9ca3af;
-      }
     }
 
     .add-btn {

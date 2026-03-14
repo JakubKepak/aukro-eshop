@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { BasketService } from '../../services/basket.service';
 import { LanguageService } from '../../services/language.service';
 import { CurrencyService } from '../../services/currency.service';
-import { formatPrice as fmtPrice } from '../../utils/format-price';
+import { formatPrice } from '../../utils/format-price';
 import { OrderSummaryComponent } from '../../components/order-summary/order-summary';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { TRANSLATIONS } from '../../i18n/translations';
 
 @Component({
   selector: 'app-basket',
@@ -14,56 +15,51 @@ import { OrderSummaryComponent } from '../../components/order-summary/order-summ
   imports: [
     MatButtonModule,
     MatCardModule,
-    MatIconModule,
     OrderSummaryComponent,
+    TranslatePipe,
   ],
   template: `
     <div class="page-header">
       <h1 class="page-title">
-        Basket
+        {{ 'basket.title' | translate }}
         <span class="item-count">{{ itemLabel() }}</span>
       </h1>
     </div>
 
-    @if (basketService.items().length === 0) {
-      <p class="empty-msg">Your basket is empty.</p>
+    @if (displayItems().length === 0) {
+      <p class="empty-msg">{{ 'basket.empty' | translate }}</p>
     } @else {
       <div class="basket-layout">
         <div class="basket-items">
-          @for (item of basketService.items(); track item.product.id) {
+          @for (item of displayItems(); track item.id) {
             <mat-card appearance="outlined" class="basket-card">
               <mat-card-content>
                 <div class="item-row">
                   <img
-                    [src]="item.product.image"
-                    [alt]="item.product.name[languageService.language()]"
+                    [src]="item.image"
+                    [alt]="item.name"
                     class="item-image"
                   />
 
                   <div class="item-details">
-                    <p class="item-name">
-                      {{ item.product.name[languageService.language()] }}
-                    </p>
+                    <p class="item-name">{{ item.name }}</p>
                     <p class="item-price">
-                      {{ formatPrice(currencyService.convert(item.product.priceCzk)) }}
-                      / {{ item.product.unit }}
+                      {{ item.unitPrice }} / {{ item.unit }}
                     </p>
                     <p class="item-qty">
-                      {{ item.quantity }} {{ item.product.unit }}
+                      {{ item.quantity }} {{ item.unit }}
                     </p>
                   </div>
 
                   <div class="item-actions">
-                    <p class="item-total">
-                      {{ formatPrice(currencyService.convert(item.product.priceCzk * item.quantity)) }}
-                    </p>
+                    <p class="item-total">{{ item.total }}</p>
                     <button
                       mat-stroked-button
                       color="warn"
                       class="remove-btn"
-                      (click)="basketService.removeItem(item.product.id)"
+                      (click)="basketService.removeItem(item.id)"
                     >
-                      Remove
+                      {{ 'common.remove' | translate }}
                     </button>
                   </div>
                 </div>
@@ -197,15 +193,31 @@ import { OrderSummaryComponent } from '../../components/order-summary/order-summ
 })
 export class BasketComponent {
   protected readonly basketService = inject(BasketService);
-  protected readonly languageService = inject(LanguageService);
-  protected readonly currencyService = inject(CurrencyService);
+  private readonly languageService = inject(LanguageService);
+  private readonly currencyService = inject(CurrencyService);
 
   readonly itemLabel = computed(() => {
     const count = this.basketService.itemCount();
-    return `${count} ${count === 1 ? 'item' : 'items'}`;
+    const lang = this.languageService.language();
+    const label = count === 1
+      ? TRANSLATIONS['common.item'][lang]
+      : TRANSLATIONS['common.items'][lang];
+    return `${count} ${label}`;
   });
 
-  formatPrice(amount: number): string {
-    return fmtPrice(amount, this.currencyService.currency());
-  }
+  readonly displayItems = computed(() => {
+    const lang = this.languageService.language();
+    const currency = this.currencyService.currency();
+    const convert = (czk: number) => this.currencyService.convert(czk);
+
+    return this.basketService.items().map((item) => ({
+      id: item.product.id,
+      name: item.product.name[lang],
+      image: item.product.image,
+      unit: item.product.unit,
+      quantity: item.quantity,
+      unitPrice: formatPrice(convert(item.product.priceCzk), currency),
+      total: formatPrice(convert(item.product.priceCzk * item.quantity), currency),
+    }));
+  });
 }
