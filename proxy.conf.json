@@ -1,0 +1,10 @@
+{
+  "/api/aukro": {
+    "target": "https://aukro.cz",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/aukro": "/backend-web/api"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "framework": "angular",
+  "buildCommand": "ng build",
+  "outputDirectory": "dist/aukro-eshop/browser",
+  "installCommand": "npm install",
+  "rewrites": [
+    {
+      "source": "/api/aukro/:path*",
+      "destination": "https://aukro.cz/backend-web/api/:path*"
+    },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
