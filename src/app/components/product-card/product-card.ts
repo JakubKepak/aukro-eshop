@@ -13,9 +13,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Product } from '../../models/product.model';
 import { LanguageService } from '../../services/language.service';
-import { CurrencyService } from '../../services/currency.service';
-import { formatPrice } from '../../utils/format-price';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
 
 @Component({
   selector: 'app-product-card',
@@ -26,6 +25,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     MatInputModule,
     MatFormFieldModule,
     TranslatePipe,
+    AppCurrencyPipe,
   ],
   host: { class: 'block' },
   template: `
@@ -43,10 +43,10 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
               <div>
                 <p class="product-name">{{ displayName() }}</p>
                 <p class="product-price">
-                  {{ formattedUnitPrice() }} / {{ product().unit }}
+                  {{ product().priceCzk | appCurrency }} / {{ product().unit }}
                 </p>
               </div>
-              <p class="product-total">{{ formattedTotal() }}</p>
+              <p class="product-total">{{ (product().priceCzk * quantity()) | appCurrency }}</p>
             </div>
 
             <div class="card-bottom">
@@ -197,24 +197,12 @@ export class ProductCardComponent {
   readonly product = input.required<Product>();
 
   private readonly languageService = inject(LanguageService);
-  private readonly currencyService = inject(CurrencyService);
   private readonly basketService = inject(BasketService);
 
   readonly quantity = signal(1);
 
   readonly displayName = computed(() =>
     this.product().name[this.languageService.language()],
-  );
-
-  readonly formattedUnitPrice = computed(() =>
-    formatPrice(this.currencyService.convert(this.product().priceCzk), this.currencyService.currency()),
-  );
-
-  readonly formattedTotal = computed(() =>
-    formatPrice(
-      this.currencyService.convert(this.product().priceCzk) * this.quantity(),
-      this.currencyService.currency(),
-    ),
   );
 
   onQuantityChange(event: Event): void {

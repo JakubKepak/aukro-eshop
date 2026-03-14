@@ -2,15 +2,14 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { BasketService } from '../../services/basket.service';
-import { CurrencyService } from '../../services/currency.service';
-import { formatPrice } from '../../utils/format-price';
 import { SHIPPING_CZK, TAX_RATE } from '../../utils/order-config';
 import { TranslatePipe } from '../../pipes/translate.pipe';
+import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
 
 @Component({
   selector: 'app-order-summary',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCardModule, MatDividerModule, TranslatePipe],
+  imports: [MatCardModule, MatDividerModule, TranslatePipe, AppCurrencyPipe],
   template: `
     <mat-card appearance="outlined" class="summary-card">
       <mat-card-content>
@@ -18,24 +17,24 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 
         <div class="summary-row">
           <span>{{ 'order.subtotal' | translate }}</span>
-          <span>{{ formattedSubtotal() }}</span>
+          <span>{{ subtotalCzk() | appCurrency }}</span>
         </div>
 
         <div class="summary-row">
           <span>{{ 'order.shipping' | translate }}</span>
-          <span>{{ formattedShipping() }}</span>
+          <span>{{ shippingCzk | appCurrency }}</span>
         </div>
 
         <div class="summary-row">
           <span>{{ 'order.tax' | translate }}</span>
-          <span>{{ formattedTax() }}</span>
+          <span>{{ taxCzk() | appCurrency }}</span>
         </div>
 
         <mat-divider />
 
         <div class="summary-row total-row">
           <span>{{ 'order.total' | translate }}</span>
-          <span>{{ formattedTotal() }}</span>
+          <span>{{ totalCzk() | appCurrency }}</span>
         </div>
       </mat-card-content>
     </mat-card>
@@ -74,24 +73,14 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 })
 export class OrderSummaryComponent {
   private readonly basketService = inject(BasketService);
-  private readonly currencyService = inject(CurrencyService);
 
-  readonly formattedSubtotal = computed(() =>
-    formatPrice(this.currencyService.convert(this.basketService.subtotalCzk()), this.currencyService.currency()),
+  readonly shippingCzk = SHIPPING_CZK;
+
+  readonly subtotalCzk = computed(() => this.basketService.subtotalCzk());
+
+  readonly taxCzk = computed(() => this.basketService.subtotalCzk() * TAX_RATE);
+
+  readonly totalCzk = computed(() =>
+    this.basketService.subtotalCzk() * (1 + TAX_RATE) + SHIPPING_CZK,
   );
-
-  readonly formattedShipping = computed(() =>
-    formatPrice(this.currencyService.convert(SHIPPING_CZK), this.currencyService.currency()),
-  );
-
-  readonly formattedTax = computed(() => {
-    const taxCzk = this.basketService.subtotalCzk() * TAX_RATE;
-    return formatPrice(this.currencyService.convert(taxCzk), this.currencyService.currency());
-  });
-
-  readonly formattedTotal = computed(() => {
-    const totalCzk =
-      this.basketService.subtotalCzk() * (1 + TAX_RATE) + SHIPPING_CZK;
-    return formatPrice(this.currencyService.convert(totalCzk), this.currencyService.currency());
-  });
 }

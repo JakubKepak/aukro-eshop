@@ -3,9 +3,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { BasketService } from '../../services/basket.service';
 import { LanguageService } from '../../services/language.service';
-import { CurrencyService } from '../../services/currency.service';
-import { formatPrice } from '../../utils/format-price';
 import { OrderSummaryComponent } from '../../components/order-summary/order-summary';
+import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { TRANSLATIONS } from '../../i18n/translations';
 
@@ -17,6 +16,7 @@ import { TRANSLATIONS } from '../../i18n/translations';
     MatCardModule,
     OrderSummaryComponent,
     TranslatePipe,
+    AppCurrencyPipe,
   ],
   template: `
     <div class="page-header">
@@ -44,7 +44,7 @@ import { TRANSLATIONS } from '../../i18n/translations';
                   <div class="item-details">
                     <p class="item-name">{{ item.name }}</p>
                     <p class="item-price">
-                      {{ item.unitPrice }} / {{ item.unit }}
+                      {{ item.priceCzk | appCurrency }} / {{ item.unit }}
                     </p>
                     <p class="item-qty">
                       {{ item.quantity }} {{ item.unit }}
@@ -52,7 +52,7 @@ import { TRANSLATIONS } from '../../i18n/translations';
                   </div>
 
                   <div class="item-actions">
-                    <p class="item-total">{{ item.total }}</p>
+                    <p class="item-total">{{ item.totalCzk | appCurrency }}</p>
                     <button
                       mat-stroked-button
                       color="warn"
@@ -194,7 +194,6 @@ import { TRANSLATIONS } from '../../i18n/translations';
 export class BasketComponent {
   protected readonly basketService = inject(BasketService);
   private readonly languageService = inject(LanguageService);
-  private readonly currencyService = inject(CurrencyService);
 
   readonly itemLabel = computed(() => {
     const count = this.basketService.itemCount();
@@ -207,8 +206,6 @@ export class BasketComponent {
 
   readonly displayItems = computed(() => {
     const lang = this.languageService.language();
-    const currency = this.currencyService.currency();
-    const convert = (czk: number) => this.currencyService.convert(czk);
 
     return this.basketService.items().map((item) => ({
       id: item.product.id,
@@ -216,8 +213,8 @@ export class BasketComponent {
       image: item.product.image,
       unit: item.product.unit,
       quantity: item.quantity,
-      unitPrice: formatPrice(convert(item.product.priceCzk), currency),
-      total: formatPrice(convert(item.product.priceCzk * item.quantity), currency),
+      priceCzk: item.product.priceCzk,
+      totalCzk: item.product.priceCzk * item.quantity,
     }));
   });
 }

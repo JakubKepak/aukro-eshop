@@ -85,9 +85,11 @@ describe('ProductCardComponent', () => {
     expect(component.quantity()).toBe(1);
   });
 
-  it('should compute formatted total based on quantity', () => {
+  it('should display formatted total based on quantity', () => {
     component.quantity.set(2);
+    fixture.detectChanges();
     // 45 CZK * 2 = 90 CZK
-    expect(component.formattedTotal()).toContain('90');
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('.product-total')?.textContent).toContain('90');
   });
 });
