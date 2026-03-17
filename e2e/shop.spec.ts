@@ -27,7 +27,7 @@ test.describe('Shop', () => {
     await expect(page).toHaveURL(/\/basket/);
 
     // Product should be in basket
-    const basketItem = page.locator('.item-name');
+    const basketItem = page.locator('.product-name');
     await expect(basketItem.first()).toContainText((productName ?? '').trim());
   });
 
@@ -38,7 +38,8 @@ test.describe('Shop', () => {
     await firstCard.locator('.add-btn').click();
 
     await page.locator('a[routerLink="/basket"]').click();
-    await expect(page.locator('.item-name')).toBeVisible();
+    await expect(page).toHaveURL(/\/basket/);
+    await expect(page.locator('.remove-btn')).toBeVisible();
 
     await page.locator('.remove-btn').first().click();
     await expect(page.locator('.empty-msg')).toBeVisible();

@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
 import { BasketService } from '../../services/basket.service';
@@ -47,40 +48,54 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
                 <p class="product-price">
                   {{ product().priceCzk | appCurrency }} / {{ product().unit }}
                 </p>
+                @if (mode() === 'basket') {
+                  <p class="product-qty">{{ quantity() }} {{ product().unit }}</p>
+                }
               </div>
               <p class="product-total">{{ (product().priceCzk * quantity()) | appCurrency }}</p>
             </div>
 
             <div class="card-bottom">
-              <mat-form-field
-                appearance="outline"
-                subscriptSizing="dynamic"
-                class="qty-field"
-              >
-                <input
-                  matInput
-                  type="number"
-                  [value]="quantity()"
-                  (input)="onQuantityChange($event)"
-                  (focus)="inputFocused.set(true)"
-                  (blur)="inputFocused.set(false)"
-                  min="0.1"
-                  step="0.5"
-                />
-                @if (!inputFocused()) {
-                  <span matTextSuffix class="unit-label">{{ product().unit }}</span>
-                }
-                <mat-icon matSuffix class="qty-icon">edit</mat-icon>
-              </mat-form-field>
+              @if (mode() === 'shop') {
+                <mat-form-field
+                  appearance="outline"
+                  subscriptSizing="dynamic"
+                  class="qty-field"
+                >
+                  <input
+                    matInput
+                    type="number"
+                    [value]="quantity()"
+                    (input)="onQuantityChange($event)"
+                    (focus)="inputFocused.set(true)"
+                    (blur)="inputFocused.set(false)"
+                    min="0.1"
+                    step="0.5"
+                  />
+                  @if (!inputFocused()) {
+                    <span matTextSuffix class="unit-label">{{ product().unit }}</span>
+                  }
+                  <mat-icon matSuffix class="qty-icon">edit</mat-icon>
+                </mat-form-field>
 
-              <button
-                mat-flat-button
-                color="primary"
-                class="add-btn"
-                (click)="onAddToBasket()"
-              >
-                {{ 'product.addToBasket' | translate }}
-              </button>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  class="add-btn"
+                  (click)="onAddToBasket()"
+                >
+                  {{ 'product.addToBasket' | translate }}
+                </button>
+              } @else {
+                <span></span>
+                <button
+                  mat-stroked-button
+                  class="remove-btn"
+                  (click)="remove.emit(product().id)"
+                >
+                  {{ 'common.remove' | translate }}
+                </button>
+              }
             </div>
           </div>
         </div>
@@ -146,6 +161,12 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
       font-weight: 500;
       color: #2d6a2d;
       margin: 0.1875rem 0 0;
+    }
+
+    .product-qty {
+      font-size: 0.8125rem;
+      color: #6b7280;
+      margin: 0.25rem 0 0;
     }
 
     .product-total {
@@ -236,15 +257,30 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
       letter-spacing: 0.01em;
       padding: 0 1.25rem;
     }
+
+    :host ::ng-deep .remove-btn.mdc-button--outlined {
+      border-radius: 0.625rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0 1.25rem;
+      color: #c62828 !important;
+      border-color: #c62828 !important;
+    }
   `,
 })
 export class ProductCardComponent {
   readonly product = input.required<Product>();
+  readonly mode = input<'shop' | 'basket'>('shop');
+  readonly basketQuantity = input(1);
+  readonly remove = output<string>();
 
   private readonly languageService = inject(LanguageService);
   private readonly basketService = inject(BasketService);
 
-  readonly quantity = signal(1);
+  private readonly editableQty = signal(1);
+  readonly quantity = computed(() =>
+    this.mode() === 'basket' ? this.basketQuantity() : this.editableQty(),
+  );
   readonly inputFocused = signal(false);
 
   readonly displayName = computed(() =>
@@ -254,13 +290,13 @@ export class ProductCardComponent {
   onQuantityChange(event: Event): void {
     const val = parseFloat((event.target as HTMLInputElement).value);
     if (val > 0) {
-      this.quantity.set(val);
+      this.editableQty.set(val);
     }
   }
 
   onAddToBasket(): void {
     this.basketService.addItem(this.product(), this.quantity());
-    this.quantity.set(1);
+    this.editableQty.set(1);
   }
 
 }

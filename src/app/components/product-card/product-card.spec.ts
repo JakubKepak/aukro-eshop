@@ -78,7 +78,8 @@ describe('ProductCardComponent', () => {
   });
 
   it('should add product to basket and reset quantity', () => {
-    component.quantity.set(3);
+    const inputEvent = { target: { value: '3' } } as unknown as Event;
+    component.onQuantityChange(inputEvent);
     component.onAddToBasket();
     expect(basketService.itemCount()).toBe(1);
     expect(basketService.items()[0].quantity).toBe(3);
@@ -86,7 +87,8 @@ describe('ProductCardComponent', () => {
   });
 
   it('should display formatted total based on quantity', () => {
-    component.quantity.set(2);
+    const inputEvent = { target: { value: '2' } } as unknown as Event;
+    component.onQuantityChange(inputEvent);
     fixture.detectChanges();
     // 45 CZK * 2 = 90 CZK
     const el: HTMLElement = fixture.nativeElement;
