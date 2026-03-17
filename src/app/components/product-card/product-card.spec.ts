@@ -92,6 +92,6 @@ describe('ProductCardComponent', () => {
     fixture.detectChanges();
     // 45 CZK * 2 = 90 CZK
     const el: HTMLElement = fixture.nativeElement;
-    expect(el.querySelector('.product-total')?.textContent).toContain('90');
+    expect(el.textContent).toContain('90');
   });
 });

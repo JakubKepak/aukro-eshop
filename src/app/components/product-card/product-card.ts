@@ -43,7 +43,7 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
           <div class="flex min-w-0 flex-1 flex-col justify-center gap-2.5 px-5 py-4">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0">
-                <p class="m-0 line-clamp-2 text-[1.0625rem] font-semibold leading-tight text-text-primary" [title]="displayName()">{{ displayName() }}</p>
+                <p data-testid="product-name" class="m-0 line-clamp-2 text-[1.0625rem] font-semibold leading-tight text-text-primary" [title]="displayName()">{{ displayName() }}</p>
                 <p class="mt-0.5 text-[0.9375rem] font-medium text-price-green">
                   {{ product().priceCzk | appCurrency }} / {{ product().unit }}
                 </p>

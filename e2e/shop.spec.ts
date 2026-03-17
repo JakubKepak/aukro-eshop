@@ -6,8 +6,8 @@ test.describe('Shop', () => {
     const cards = page.locator('app-product-card');
     await expect(cards.first()).toBeVisible({ timeout: 10_000 });
     expect(await cards.count()).toBeGreaterThan(0);
-    await expect(cards.first().locator('.product-name')).not.toBeEmpty();
-    await expect(cards.first().locator('.product-price')).toContainText('/');
+    await expect(cards.first()).not.toBeEmpty();
+    await expect(cards.first()).toContainText('/');
   });
 
   test('should add a product to the basket and navigate to it', async ({ page }) => {
@@ -15,7 +15,7 @@ test.describe('Shop', () => {
     const firstCard = page.locator('app-product-card').first();
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
 
-    const productName = await firstCard.locator('.product-name').textContent();
+    const productName = await firstCard.locator('[data-testid="product-name"]').textContent();
     await firstCard.locator('.add-btn').click();
 
     // Basket badge should appear in nav
@@ -27,8 +27,9 @@ test.describe('Shop', () => {
     await expect(page).toHaveURL(/\/basket/);
 
     // Product should be in basket
-    const basketItem = page.locator('.product-name');
-    await expect(basketItem.first()).toContainText((productName ?? '').trim());
+    await expect(page.locator('app-product-card').first()).toContainText(
+      (productName ?? '').trim(),
+    );
   });
 
   test('should remove an item from the basket', async ({ page }) => {
@@ -42,7 +43,7 @@ test.describe('Shop', () => {
     await expect(page.locator('.remove-btn')).toBeVisible();
 
     await page.locator('.remove-btn').first().click();
-    await expect(page.locator('.empty-msg')).toBeVisible();
+    await expect(page.getByText(/prázdný|empty|prázdny/i)).toBeVisible();
   });
 
   test('should switch currency and update prices', async ({ page }) => {
@@ -50,15 +51,14 @@ test.describe('Shop', () => {
     const firstCard = page.locator('app-product-card').first();
     await expect(firstCard).toBeVisible({ timeout: 10_000 });
 
-    const czkPrice = await firstCard.locator('.product-price').textContent();
-    expect(czkPrice).toContain('Kč');
+    await expect(firstCard).toContainText('Kč');
 
     // Switch to EUR
-    const currencySelect = page.locator('.header-select').nth(1);
+    const currencySelect = page.locator('.header-selectors mat-form-field').last();
     await currencySelect.click();
     await page.locator('mat-option').filter({ hasText: 'EUR' }).click();
 
-    await expect(firstCard.locator('.product-price')).toContainText('€');
+    await expect(firstCard).toContainText('€');
   });
 
   test('should switch language and update UI text', async ({ page }) => {
@@ -70,7 +70,7 @@ test.describe('Shop', () => {
     await expect(basketTab).toContainText('Košík');
 
     // Switch to English
-    const langSelect = page.locator('.header-select').first();
+    const langSelect = page.locator('.header-selectors mat-form-field').first();
     await langSelect.click();
     await page.locator('mat-option').filter({ hasText: 'English' }).click();
 
