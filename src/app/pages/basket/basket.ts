@@ -4,7 +4,7 @@ import { LanguageService } from '../../services/language.service';
 import { OrderSummaryComponent } from '../../components/order-summary/order-summary';
 import { ProductCardComponent } from '../../components/product-card/product-card';
 import { TranslatePipe } from '../../pipes/translate.pipe';
-import { TRANSLATIONS } from '../../i18n/translations';
+import { TRANSLATIONS, pluralKey } from '../../i18n/translations';
 
 @Component({
   selector: 'app-basket',
@@ -18,13 +18,13 @@ import { TRANSLATIONS } from '../../i18n/translations';
   template: `
     <div class="mb-6">
       <h1 class="m-0 font-title text-4xl italic font-light text-gray-900">
-        {{ 'basket.title' | translate }}
+        {{ 'basket.title' | translate:lang() }}
         <span class="ml-3 font-sans text-sm not-italic text-text-muted">{{ itemLabel() }}</span>
       </h1>
     </div>
 
     @if (basketItems().length === 0) {
-      <p class="text-base text-text-secondary">{{ 'basket.empty' | translate }}</p>
+      <p class="text-base text-text-secondary">{{ 'basket.empty' | translate:lang() }}</p>
     } @else {
       <div class="flex flex-col gap-6 md:flex-row">
         <div class="flex flex-col gap-3 md:flex-2">
@@ -48,14 +48,13 @@ import { TRANSLATIONS } from '../../i18n/translations';
 export class BasketComponent {
   protected readonly basketService = inject(BasketService);
   private readonly languageService = inject(LanguageService);
+  protected readonly lang = this.languageService.language;
 
   readonly itemLabel = computed(() => {
     const count = this.basketService.itemCount();
     const lang = this.languageService.language();
-    const label = count === 1
-      ? TRANSLATIONS['common.item'][lang]
-      : TRANSLATIONS['common.items'][lang];
-    return `${count} ${label}`;
+    const key = pluralKey('common.item', count);
+    return `${count} ${TRANSLATIONS[key][lang]}`;
   });
 
   readonly basketItems = this.basketService.items;

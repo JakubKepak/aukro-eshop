@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { Product } from '../../models/product.model';
 import { LanguageService } from '../../services/language.service';
+import { CurrencyService } from '../../services/currency.service';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
 
@@ -45,13 +46,13 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
               <div class="min-w-0">
                 <p data-testid="product-name" class="m-0 line-clamp-2 text-[1.0625rem] font-semibold leading-tight text-text-primary" [title]="displayName()">{{ displayName() }}</p>
                 <p class="mt-0.5 text-[0.9375rem] font-medium text-price-green">
-                  {{ product().priceCzk | appCurrency }} / {{ product().unit }}
+                  {{ product().priceCzk | appCurrency:rate():currencyCode() }} / {{ product().unit }}
                 </p>
                 @if (mode() === 'basket') {
                   <p class="mt-1 text-[0.8125rem] text-text-secondary">{{ quantity() }} {{ product().unit }}</p>
                 }
               </div>
-              <p class="m-0 whitespace-nowrap text-xl font-bold text-text-primary">{{ (product().priceCzk * quantity()) | appCurrency }}</p>
+              <p class="m-0 whitespace-nowrap text-xl font-bold text-text-primary">{{ (product().priceCzk * quantity()) | appCurrency:rate():currencyCode() }}</p>
             </div>
 
             <div class="mt-0.5 flex items-center justify-between gap-3">
@@ -84,7 +85,7 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
                   class="add-btn whitespace-nowrap px-5 text-[0.8125rem] font-medium tracking-tight"
                   (click)="onAddToBasket()"
                 >
-                  {{ 'product.addToBasket' | translate }}
+                  {{ 'product.addToBasket' | translate:lang() }}
                 </button>
               } @else {
                 <button
@@ -92,7 +93,7 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
                   class="remove-btn ml-auto px-5 text-[0.8125rem] font-medium"
                   (click)="remove.emit(product().id)"
                 >
-                  {{ 'common.remove' | translate }}
+                  {{ 'common.remove' | translate:lang() }}
                 </button>
               }
             </div>
@@ -131,7 +132,12 @@ export class ProductCardComponent {
   readonly remove = output<string>();
 
   private readonly languageService = inject(LanguageService);
+  private readonly currencyService = inject(CurrencyService);
   private readonly basketService = inject(BasketService);
+
+  protected readonly lang = this.languageService.language;
+  protected readonly rate = this.currencyService.rate;
+  protected readonly currencyCode = this.currencyService.currency;
 
   private readonly editableQty = signal(1);
   readonly quantity = computed(() =>

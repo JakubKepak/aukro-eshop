@@ -10,7 +10,7 @@ const OFFER_IDS = [
   7086708273, 7086632118, 7086307306, 7086406787,
 ];
 
-function mapApiOffer(offer: ApiOffer, rate: number): Product {
+function mapApiOffer(offer: ApiOffer): Product {
   const name = offer.name;
   const image =
     offer.images?.lists?.medium?.[0]?.url ??
@@ -19,7 +19,8 @@ function mapApiOffer(offer: ApiOffer, rate: number): Product {
   return {
     id: `api-${offer.id}`,
     name: { cs: name, sk: name, en: name },
-    priceCzk: offer.buyNowPrice.amount / rate,
+    priceCzk: offer.buyNowPrice.amount, // overwritten by products computed()
+    priceApi: offer.buyNowPrice.amount,
     unit: 'ks',
     image,
   };
@@ -29,12 +30,13 @@ function mapApiOffer(offer: ApiOffer, rate: number): Product {
 export class ProductService {
   private readonly currencyService = inject(CurrencyService);
 
+  // Aukro API only supports CZK and EUR — fall back to CZK for GBP
   private readonly apiCurrency = computed(() => {
     const currency = this.currencyService.currency();
     return currency === 'GBP' ? 'CZK' as const : currency;
   });
 
-  private readonly rate = computed(() =>
+  private readonly apiRate = computed(() =>
     this.apiCurrency() === 'CZK' ? 1 : this.currencyService.rate(),
   );
 
@@ -44,10 +46,16 @@ export class ProductService {
       defaultValue: [] as Product[],
       parse: (raw) => {
         const res = raw as ApiOffersResponse;
-        return (res.content ?? []).map((offer) => mapApiOffer(offer, this.rate()));
+        return (res.content ?? []).map(mapApiOffer);
       },
     },
   );
 
-  readonly products = this.resource.value;
+  /** Products with price converted to CZK (base currency for the app) */
+  readonly products = computed(() =>
+    this.resource.value().map((p) => ({
+      ...p,
+      priceCzk: p.priceApi / this.apiRate(),
+    })),
+  );
 }

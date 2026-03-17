@@ -34,7 +34,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
             #shopLink="routerLinkActive"
             [active]="shopLink.isActive"
           >
-            {{ 'nav.shop' | translate }}
+            {{ 'nav.shop' | translate:languageService.language() }}
           </a>
           <a
             mat-tab-link
@@ -43,7 +43,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
             #basketLink="routerLinkActive"
             [active]="basketLink.isActive"
           >
-            {{ 'nav.basket' | translate }} @if (basketBadge(); as badge) {
+            {{ 'nav.basket' | translate:languageService.language() }} @if (basketBadge(); as badge) {
               ({{ badge }})
             }
           </a>

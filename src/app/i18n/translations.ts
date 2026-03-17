@@ -1,3 +1,10 @@
+/** Returns the correct plural translation key for Czech/Slovak/English */
+export function pluralKey(base: string, count: number): string {
+  if (count === 1) return `${base}.one`;
+  if (count >= 2 && count <= 4) return `${base}.few`;
+  return `${base}.many`;
+}
+
 export const TRANSLATIONS: Record<string, Record<'cs' | 'sk' | 'en', string>> = {
   'nav.shop': {
     cs: 'Obchod',
@@ -59,12 +66,17 @@ export const TRANSLATIONS: Record<string, Record<'cs' | 'sk' | 'en', string>> = 
     sk: 'Celkom',
     en: 'Total',
   },
-  'common.item': {
+  'common.item.one': {
     cs: 'položka',
     sk: 'položka',
     en: 'item',
   },
-  'common.items': {
+  'common.item.few': {
+    cs: 'položky',
+    sk: 'položky',
+    en: 'items',
+  },
+  'common.item.many': {
     cs: 'položek',
     sk: 'položiek',
     en: 'items',

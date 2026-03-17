@@ -1,18 +1,10 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
-import { CurrencyService } from '../services/currency.service';
+import { Pipe, PipeTransform } from '@angular/core';
+import { CurrencyCode } from '../services/currency.service';
 import { formatPrice } from '../utils/format-price';
 
-@Pipe({
-  name: 'appCurrency',
-  pure: false,
-})
+@Pipe({ name: 'appCurrency' })
 export class AppCurrencyPipe implements PipeTransform {
-  private readonly currencyService = inject(CurrencyService);
-
-  transform(amountCzk: number): string {
-    return formatPrice(
-      this.currencyService.convert(amountCzk),
-      this.currencyService.currency(),
-    );
+  transform(amountCzk: number, rate: number, code: CurrencyCode): string {
+    return formatPrice(amountCzk * rate, code);
   }
 }

@@ -9,6 +9,7 @@ const mockProduct: Product = {
   id: 'apple',
   name: { cs: 'Jablko', sk: 'Jablko', en: 'Apple' },
   priceCzk: 45,
+  priceApi: 45,
   unit: 'kg',
   image: 'assets/images/apple.svg',
 };
