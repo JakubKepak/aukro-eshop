@@ -32,19 +32,18 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
   ],
   host: { class: 'block' },
   template: `
-    <mat-card class="overflow-hidden">
-      <mat-card-content>
-        <div class="flex items-stretch">
+    <mat-card class="h-44 overflow-hidden">
+      <div class="flex h-full">
           <img
             [src]="product().image"
             [alt]="displayName()"
-            class="w-[28%] shrink-0 bg-white object-cover"
+            class="h-44 w-[28%] shrink-0 bg-white object-cover"
           />
 
           <div class="flex min-w-0 flex-1 flex-col justify-center gap-2.5 px-5 py-4">
             <div class="flex items-start justify-between gap-3">
               <div class="min-w-0">
-                <p class="m-0 text-[1.0625rem] font-semibold leading-tight text-text-primary">{{ displayName() }}</p>
+                <p class="m-0 line-clamp-2 text-[1.0625rem] font-semibold leading-tight text-text-primary" [title]="displayName()">{{ displayName() }}</p>
                 <p class="mt-0.5 text-[0.9375rem] font-medium text-price-green">
                   {{ product().priceCzk | appCurrency }} / {{ product().unit }}
                 </p>
@@ -99,7 +98,6 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
             </div>
           </div>
         </div>
-      </mat-card-content>
     </mat-card>
   `,
   styles: `
@@ -108,7 +106,6 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
       --mdc-elevated-card-container-shape: 1rem;
       --mdc-elevated-card-container-elevation: 0 1px 4px rgba(0, 0, 0, 0.08),
         0 0 0 1px rgba(0, 0, 0, 0.04);
-      --mat-card-content-padding: 0;
     }
 
     .qty-field {
