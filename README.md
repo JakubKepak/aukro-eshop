@@ -2,7 +2,7 @@
 
 **Demo:** https://aukro-eshop.vercel.app/
 
-## Technológie
+## Stack
 
 - Angular 21 (standalone komponenty, Signals, OnPush)
 - Angular Material 21
