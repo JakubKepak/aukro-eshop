@@ -89,7 +89,7 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
                 </button>
               } @else {
                 <button
-                  mat-stroked-button
+                  mat-flat-button
                   class="remove-btn ml-auto px-5 text-[0.8125rem] font-medium"
                   (click)="remove.emit(product().id)"
                 >
@@ -116,12 +116,6 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
       --mdc-outlined-text-field-container-shape: 999px;
       --mat-form-field-container-height: 2rem;
       --mat-form-field-container-vertical-padding: 0.3rem;
-    }
-
-    .remove-btn {
-      --mdc-outlined-button-label-text-color: #c62828;
-      --mdc-outlined-button-outline-color: #c62828;
-      --mdc-outlined-button-container-shape: 0.625rem;
     }
 
     .add-btn {

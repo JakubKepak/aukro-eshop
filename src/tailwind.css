@@ -23,3 +23,10 @@ input[type='number'].hide-spinner {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* Red filled "Remove" button — overrides Material theme primary color */
+.mat-mdc-unelevated-button.remove-btn {
+  --mat-button-filled-container-color: #c62828;
+  --mat-button-filled-label-text-color: #fff;
+  --mdc-filled-button-container-shape: 0.625rem;
+}
