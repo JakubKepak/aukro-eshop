@@ -104,7 +104,7 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
   `,
   styles: `
     :host {
-      --mdc-elevated-card-container-color: #f8f6f2;
+      --mdc-elevated-card-container-color: var(--color-warm-bg);
       --mdc-elevated-card-container-shape: 1rem;
       --mdc-elevated-card-container-elevation: 0 1px 4px rgba(0, 0, 0, 0.08),
         0 0 0 1px rgba(0, 0, 0, 0.04);
@@ -112,7 +112,7 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
     }
 
     .qty-field {
-      --mdc-outlined-text-field-outline-color: #d5d0c8;
+      --mdc-outlined-text-field-outline-color: var(--color-warm-border);
       --mdc-outlined-text-field-container-shape: 999px;
       --mat-form-field-container-height: 2rem;
       --mat-form-field-container-vertical-padding: 0.3rem;
