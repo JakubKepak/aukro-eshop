@@ -11,6 +11,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
 @Component({
   selector: 'app-layout',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   imports: [
     RouterLink,
     RouterLinkActive,
@@ -20,9 +21,10 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     TranslatePipe,
   ],
   template: `
-    <header class="header">
-      <div class="header-inner">
-        <div class="header-spacer"></div>
+    <header class="bg-white">
+      <div class="mx-auto flex max-w-5xl flex-col items-center gap-2 px-4 pt-3 sm:flex-row sm:justify-between">
+        <!-- Invisible spacer: balances the selectors on the right so nav tabs stay centered -->
+        <div class="hidden flex-1 sm:block"></div>
 
         <nav mat-tab-nav-bar [tabPanel]="tabPanel" class="nav-bar">
           <a
@@ -47,11 +49,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           </a>
         </nav>
 
-        <div class="header-selectors">
+        <div class="header-selectors flex flex-1 items-center justify-end gap-2">
           <mat-form-field
             appearance="outline"
             subscriptSizing="dynamic"
-            class="header-select"
+            class="w-28"
           >
             <mat-select
               [value]="languageService.language()"
@@ -66,7 +68,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           <mat-form-field
             appearance="outline"
             subscriptSizing="dynamic"
-            class="header-select"
+            class="w-28"
           >
             <mat-select
               [value]="currencyService.currency()"
@@ -84,63 +86,19 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
     </header>
 
     <mat-tab-nav-panel #tabPanel>
-      <main class="main-content">
+      <main class="mx-auto max-w-5xl px-4 py-6">
         <ng-content />
       </main>
     </mat-tab-nav-panel>
   `,
   styles: `
-    :host {
-      display: block;
-    }
-
-    .header {
-      background: white;
-    }
-
-    .header-inner {
-      max-width: 64rem;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1rem 0;
-    }
-
-    .header-spacer {
-      flex: 1;
-    }
-
     .nav-bar {
       border-bottom: none;
     }
 
     .header-selectors {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 0.5rem;
-    }
-
-    .header-select {
-      width: 7rem;
-
-      ::ng-deep .mat-mdc-text-field-wrapper {
-        height: 36px;
-        padding: 0 8px;
-      }
-
-      ::ng-deep .mat-mdc-form-field-infix {
-        padding: 6px 0 !important;
-        min-height: 36px;
-      }
-    }
-
-    .main-content {
-      max-width: 64rem;
-      margin: 0 auto;
-      padding: 1.5rem 1rem;
+      --mat-form-field-container-height: 36px;
+      --mat-form-field-container-vertical-padding: 6px;
     }
   `,
 })

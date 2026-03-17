@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+@source "../src/**/*.ts";
+
+@theme {
+  --color-warm-bg: #f8f6f2;
+  --color-warm-border: #d5d0c8;
+  --color-price-green: #2d6a2d;
+  --color-danger: #c62828;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --font-title: Georgia, 'Times New Roman', serif;
+}
+
+/* Hide number input spinners — no Material token exists for this */
+input[type='number'].hide-spinner::-webkit-outer-spin-button,
+input[type='number'].hide-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+input[type='number'].hide-spinner {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

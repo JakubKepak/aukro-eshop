@@ -11,28 +11,28 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatCardModule, MatDividerModule, TranslatePipe, AppCurrencyPipe],
   template: `
-    <mat-card appearance="outlined" class="summary-card">
+    <mat-card appearance="outlined">
       <mat-card-content>
-        <h2 class="summary-title">{{ 'order.summary' | translate }}</h2>
+        <h2 class="mb-4 text-xl font-semibold text-gray-900">{{ 'order.summary' | translate }}</h2>
 
-        <div class="summary-row">
+        <div class="flex justify-between py-2 text-[0.9rem] text-gray-600">
           <span>{{ 'order.subtotal' | translate }}</span>
           <span>{{ subtotalCzk() | appCurrency }}</span>
         </div>
 
-        <div class="summary-row">
+        <div class="flex justify-between py-2 text-[0.9rem] text-gray-600">
           <span>{{ 'order.shipping' | translate }}</span>
           <span>{{ shippingCzk | appCurrency }}</span>
         </div>
 
-        <div class="summary-row">
+        <div class="flex justify-between py-2 text-[0.9rem] text-gray-600">
           <span>{{ 'order.tax' | translate }}</span>
           <span>{{ taxCzk() | appCurrency }}</span>
         </div>
 
-        <mat-divider />
+        <mat-divider class="my-2" />
 
-        <div class="summary-row total-row">
+        <div class="flex justify-between pt-3 text-[1.1rem] font-bold text-gray-900">
           <span>{{ 'order.total' | translate }}</span>
           <span>{{ totalCzk() | appCurrency }}</span>
         </div>
@@ -40,34 +40,8 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
     </mat-card>
   `,
   styles: `
-    .summary-card {
-      border-radius: 1rem;
-    }
-
-    .summary-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 0 0 1rem;
-      color: #111;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem 0;
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    .total-row {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #111;
-      padding-top: 0.75rem;
-    }
-
-    mat-divider {
-      margin: 0.5rem 0;
+    :host {
+      --mdc-outlined-card-container-shape: 1rem;
     }
   `,
 })

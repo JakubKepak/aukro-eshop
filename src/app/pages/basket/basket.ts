@@ -14,19 +14,20 @@ import { TRANSLATIONS } from '../../i18n/translations';
     ProductCardComponent,
     TranslatePipe,
   ],
+  host: { class: 'block' },
   template: `
-    <div class="page-header">
-      <h1 class="page-title">
+    <div class="mb-6">
+      <h1 class="m-0 font-title text-4xl italic font-light text-gray-900">
         {{ 'basket.title' | translate }}
-        <span class="item-count">{{ itemLabel() }}</span>
+        <span class="ml-3 font-sans text-sm not-italic text-text-muted">{{ itemLabel() }}</span>
       </h1>
     </div>
 
     @if (basketItems().length === 0) {
-      <p class="empty-msg">{{ 'basket.empty' | translate }}</p>
+      <p class="text-base text-text-secondary">{{ 'basket.empty' | translate }}</p>
     } @else {
-      <div class="basket-layout">
-        <div class="basket-items">
+      <div class="flex flex-col gap-6 md:flex-row">
+        <div class="flex flex-col gap-3 md:flex-2">
           @for (item of basketItems(); track item.product.id) {
             <app-product-card
               [product]="item.product"
@@ -37,65 +38,11 @@ import { TRANSLATIONS } from '../../i18n/translations';
           }
         </div>
 
-        <aside class="basket-summary">
+        <aside class="md:flex-1 md:sticky md:top-4">
           <app-order-summary />
         </aside>
       </div>
     }
-  `,
-  styles: `
-    .page-header {
-      margin-bottom: 1.5rem;
-    }
-
-    .page-title {
-      font-family: Georgia, 'Times New Roman', serif;
-      font-size: 2.25rem;
-      font-style: italic;
-      font-weight: 300;
-      color: #111;
-      margin: 0;
-    }
-
-    .item-count {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: 0.875rem;
-      font-style: normal;
-      color: #9ca3af;
-      margin-left: 0.75rem;
-    }
-
-    .empty-msg {
-      color: #6b7280;
-      font-size: 1rem;
-    }
-
-    .basket-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    @media (min-width: 768px) {
-      .basket-layout {
-        flex-direction: row;
-      }
-
-      .basket-items {
-        flex: 2;
-      }
-
-      .basket-summary {
-        flex: 1;
-      }
-    }
-
-    .basket-items {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
   `,
 })
 export class BasketComponent {

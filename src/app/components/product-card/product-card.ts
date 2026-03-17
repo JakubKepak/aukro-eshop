@@ -32,39 +32,40 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
   ],
   host: { class: 'block' },
   template: `
-    <mat-card class="card">
+    <mat-card class="overflow-hidden">
       <mat-card-content>
-        <div class="card-row">
+        <div class="flex items-stretch">
           <img
             [src]="product().image"
             [alt]="displayName()"
-            class="card-image"
+            class="w-[28%] shrink-0 bg-white object-cover"
           />
 
-          <div class="card-content">
-            <div class="card-top">
-              <div class="card-info">
-                <p class="product-name">{{ displayName() }}</p>
-                <p class="product-price">
+          <div class="flex min-w-0 flex-1 flex-col justify-center gap-2.5 px-5 py-4">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p class="m-0 text-[1.0625rem] font-semibold leading-tight text-text-primary">{{ displayName() }}</p>
+                <p class="mt-0.5 text-[0.9375rem] font-medium text-price-green">
                   {{ product().priceCzk | appCurrency }} / {{ product().unit }}
                 </p>
                 @if (mode() === 'basket') {
-                  <p class="product-qty">{{ quantity() }} {{ product().unit }}</p>
+                  <p class="mt-1 text-[0.8125rem] text-text-secondary">{{ quantity() }} {{ product().unit }}</p>
                 }
               </div>
-              <p class="product-total">{{ (product().priceCzk * quantity()) | appCurrency }}</p>
+              <p class="m-0 whitespace-nowrap text-xl font-bold text-text-primary">{{ (product().priceCzk * quantity()) | appCurrency }}</p>
             </div>
 
-            <div class="card-bottom">
+            <div class="mt-0.5 flex items-center justify-between gap-3">
               @if (mode() === 'shop') {
                 <mat-form-field
                   appearance="outline"
                   subscriptSizing="dynamic"
-                  class="qty-field"
+                  class="qty-field w-32"
                 >
                   <input
                     matInput
                     type="number"
+                    class="hide-spinner w-6 text-sm font-medium"
                     [value]="quantity()"
                     (input)="onQuantityChange($event)"
                     (focus)="inputFocused.set(true)"
@@ -73,24 +74,23 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
                     step="0.5"
                   />
                   @if (!inputFocused()) {
-                    <span matTextSuffix class="unit-label">{{ product().unit }}</span>
+                    <span matTextSuffix class="-ml-0.5 text-sm font-medium text-text-primary">{{ product().unit }}</span>
                   }
-                  <mat-icon matSuffix class="qty-icon">edit</mat-icon>
+                  <mat-icon matSuffix class="qty-icon text-gray-400">edit</mat-icon>
                 </mat-form-field>
 
                 <button
                   mat-flat-button
                   color="primary"
-                  class="add-btn"
+                  class="add-btn whitespace-nowrap px-5 text-[0.8125rem] font-medium tracking-tight"
                   (click)="onAddToBasket()"
                 >
                   {{ 'product.addToBasket' | translate }}
                 </button>
               } @else {
-                <span></span>
                 <button
                   mat-stroked-button
-                  class="remove-btn"
+                  class="remove-btn ml-auto px-5 text-[0.8125rem] font-medium"
                   (click)="remove.emit(product().id)"
                 >
                   {{ 'common.remove' | translate }}
@@ -103,168 +103,33 @@ import { AppCurrencyPipe } from '../../pipes/app-currency.pipe';
     </mat-card>
   `,
   styles: `
-    :host ::ng-deep .mat-mdc-card {
+    :host {
       --mdc-elevated-card-container-color: #f8f6f2;
-      border-radius: 1rem;
-      overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
-    }
-
-    :host ::ng-deep mat-card-content {
-      padding: 0 !important;
-    }
-
-    .card-row {
-      display: flex;
-      align-items: stretch;
-    }
-
-    .card-image {
-      width: 28%;
-      min-height: 100%;
-      flex-shrink: 0;
-      object-fit: cover;
-      background-color: #fff;
-    }
-
-    .card-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 0.625rem;
-      min-width: 0;
-      padding: 1rem 1.25rem;
-    }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 0.75rem;
-    }
-
-    .card-info {
-      min-width: 0;
-    }
-
-    .product-name {
-      font-size: 1.0625rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      line-height: 1.3;
-      margin: 0;
-    }
-
-    .product-price {
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: #2d6a2d;
-      margin: 0.1875rem 0 0;
-    }
-
-    .product-qty {
-      font-size: 0.8125rem;
-      color: #6b7280;
-      margin: 0.25rem 0 0;
-    }
-
-    .product-total {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      white-space: nowrap;
-      margin: 0;
-    }
-
-    .card-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-top: 0.125rem;
+      --mdc-elevated-card-container-shape: 1rem;
+      --mdc-elevated-card-container-elevation: 0 1px 4px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(0, 0, 0, 0.04);
+      --mat-card-content-padding: 0;
     }
 
     .qty-field {
-      width: 8rem;
+      --mdc-outlined-text-field-outline-color: #d5d0c8;
+      --mdc-outlined-text-field-container-shape: 999px;
+      --mat-form-field-container-height: 2rem;
+      --mat-form-field-container-vertical-padding: 0.3rem;
     }
 
-    :host ::ng-deep .qty-field .mdc-notched-outline__leading {
-      border-radius: 999px 0 0 999px !important;
-      width: 18px !important;
-    }
-
-    :host ::ng-deep .qty-field .mdc-notched-outline__trailing {
-      border-radius: 0 999px 999px 0 !important;
-    }
-
-    :host ::ng-deep .qty-field .mdc-notched-outline__leading,
-    :host ::ng-deep .qty-field .mdc-notched-outline__trailing,
-    :host ::ng-deep .qty-field .mdc-notched-outline__notch {
-      border-color: #d5d0c8;
-    }
-
-    :host ::ng-deep .qty-field .mat-mdc-text-field-wrapper {
-      padding: 0 0.75rem;
-    }
-
-    :host ::ng-deep .qty-field .mat-mdc-form-field-infix {
-      padding: 0.3rem 0;
-      min-height: 2rem;
-      width: auto;
-      flex: 0 0 auto;
-    }
-
-    :host ::ng-deep .qty-field .mat-mdc-form-field-flex {
-      align-items: center;
-      gap: 0;
-    }
-
-    :host ::ng-deep .qty-field input {
-      font-size: 0.875rem;
-      font-weight: 500;
-      width: 1.5rem;
-    }
-
-    :host ::ng-deep .qty-field input[type='number']::-webkit-outer-spin-button,
-    :host ::ng-deep .qty-field input[type='number']::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    :host ::ng-deep .qty-field input[type='number'] {
-      -moz-appearance: textfield;
-    }
-
-    .unit-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #1a1a1a;
-      margin-left: -0.125rem;
-    }
-
-    .qty-icon {
-      font-size: 1rem;
-      width: 1rem;
-      height: 1rem;
-      color: #aaa;
+    .remove-btn {
+      --mdc-outlined-button-label-text-color: #c62828;
+      --mdc-outlined-button-outline-color: #c62828;
+      --mdc-outlined-button-container-shape: 0.625rem;
     }
 
     .add-btn {
-      border-radius: 0.625rem;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      padding: 0 1.25rem;
+      --mdc-filled-button-container-shape: 0.625rem;
     }
 
-    :host ::ng-deep .remove-btn.mdc-button--outlined {
-      border-radius: 0.625rem;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      padding: 0 1.25rem;
-      color: #c62828 !important;
-      border-color: #c62828 !important;
+    .qty-icon {
+      --mat-icon-size: 1rem;
     }
   `,
 })
